@@ -3,6 +3,9 @@ import bcrypt from 'bcrypt';
 import { serverError } from "../../utils/server_error_res.js";
 
 export const loginController = async (req, res) => {
+    
+  try {
+
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -11,8 +14,6 @@ export const loginController = async (req, res) => {
             message: "All fields are mandatory in the body!"
         });
     }
-
-    try {
         const user = await User.findOne({ email }).lean();
         const verifyPass = user ? await bcrypt.compare(password, user.password) : null;
 

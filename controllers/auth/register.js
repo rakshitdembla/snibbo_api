@@ -3,16 +3,15 @@ import bcrypt from 'bcrypt';
 import { serverError } from "../../utils/server_error_res.js";
 
 export const registerController = async (req, res) => {
-    const { username, name, email, password } = req.body;
-
-    if (!username, !name, !email, !password) {
-        return res.status(400).json({
-            success: false,
-            message: "All fields are mandatory in the body!"
-        })
-    }
-
     try {
+        const { username, name, email, password } = req.body;
+
+        if (!username, !name, !email, !password) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are mandatory in the body!"
+            })
+        }
         const emailExists = await User.findOne({ email }).lean();
 
         if (emailExists) {
@@ -48,6 +47,6 @@ export const registerController = async (req, res) => {
 
 
     } catch (e) {
-        serverError(res,e);
+        serverError(res, e);
     }
 }

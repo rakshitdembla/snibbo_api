@@ -3,18 +3,18 @@ import { Post } from "../../models/Post.js";
 import { serverError } from "../../utils/server_error_res.js";
 
 export const updatePost = async (req, res) => {
-    const { postId } = req.params;
-    const { captions } = req.body;
-    const contentCaptions = captions || null;
-
-    if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
-        return res.status(400).json({
-            success: false,
-            message: "Please provide a valid post id"
-        })
-    }
-
     try {
+        const { postId } = req.params;
+        const { captions } = req.body;
+        const contentCaptions = captions || null;
+    
+        if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid post id"
+            })
+        }
+        
         const post = await Post.findById(postId).lean();
 
         if (!post) {

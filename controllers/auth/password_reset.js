@@ -5,15 +5,17 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 
 export const forgetPassword = async (req, res) => {
-    const { email } = req.body;
-
-    if (!email) {
-        return res.status(400).json({
-            success: false,
-            message: "Please provide a valid email address"
-        });
-    }
     try {
+
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid email address"
+            });
+        }
+        
         const user = await User.findOne({ email: email }).lean();
 
         if (!user) {

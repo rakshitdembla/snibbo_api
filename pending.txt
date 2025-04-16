@@ -1,0 +1,12 @@
+story expire in 24hours,
+
+websockets.io for =======
+
+- last seen
+-chat
+-notifications
+
+
+
+----- MONGOOSE ------ PAGINATION IN API
+

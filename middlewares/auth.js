@@ -1,11 +1,11 @@
 import { User } from "../models/User.js"
+import mongoose from "mongoose";
 
 export const isAuthenticated = async (req, res, next) => {
     try {
         const {user_id} = req.headers;
-        console.log("Header userId:", user_id);
 
-        if (!user_id) {
+        if (!user_id|| !mongoose.Types.ObjectId.isValid(user_id)) {
             return res.status(401).json({
                 success: false,
                 message: "Unauthorized user!"

@@ -6,6 +6,7 @@ import ratelimit from "express-rate-limit";
 import os from "node:os";
 import { authRouter } from "./routes/auth_routes.js";
 import { postsRouter } from "./routes/posts_routes.js";
+import { storyRouter } from "./routes/story_routes.js";
 
 dotenv.config()
 const app = express();
@@ -43,6 +44,7 @@ try {
             app.use(limiter);
             app.use("/api/auth", authRouter);
             app.use("/api/posts", postsRouter);
+            app.use("/api/story",storyRouter);
         }
         serverConnection();
     }

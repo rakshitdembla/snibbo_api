@@ -1,4 +1,5 @@
 import { Post } from "../../models/Post.js";
+import { User } from "../../models/User.js";
 import { serverError } from "../../utils/server_error_res.js";
 
 export const createPost = async (req, res) => {
@@ -17,6 +18,12 @@ export const createPost = async (req, res) => {
             userId: userId,
             postContent: content,
             postCaption: postCaption
+        });
+
+        const userStories = await User.findByIdAndUpdate(userId,{
+            $addToSet: {
+                userPosts: post._id
+            }
         });
 
         return res.status(201).json({

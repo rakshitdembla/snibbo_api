@@ -1,4 +1,5 @@
 import { Story } from "../../models/Story.js";
+import { User } from "../../models/User.js";
 import { serverError } from "../../utils/server_error_res.js";
 
 export const addStory = async (req, res) => {
@@ -17,6 +18,12 @@ export const addStory = async (req, res) => {
             userId: userId,
             contentType: contentType,
             storyContent: storyContent,
+        });
+
+        const userStories = await User.findByIdAndUpdate(userId,{
+            $addToSet: {
+                userStories: story._id
+            }
         });
 
         return res.status(201).json({

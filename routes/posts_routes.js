@@ -1,14 +1,18 @@
 import express from "express";
-import {isAuthenticated} from "../middlewares/auth.js";
+import { isAuthenticated } from "../middlewares/auth.js";
 import { getAllPosts,getFollowingPosts } from "../controllers/posts/get_posts.js";
-import {deletePost} from "../controllers/posts/delete_post.js";
+import { deletePost } from "../controllers/posts/delete_post.js";
 import { createPost } from "../controllers/posts/create_post.js";
 import { updatePost } from "../controllers/posts/update_post.js";
-import {likePost} from "../controllers/posts/like/like_post.js";
-import {dislikePost} from "../controllers/posts/like/dislike_post.js";
+import { likePost } from "../controllers/posts/like/like_post.js";
+import { dislikePost } from "../controllers/posts/like/dislike_post.js";
 import { likedUsers } from "../controllers/posts/like/liked_users.js";
 import { addComment,addReply } from "../controllers/posts/comments/create_comment.js";
 import { removeComment,removeReply } from "../controllers/posts/comments/remove_comment.js";
+import { getComments,getReplies } from "../controllers/posts/comments/get_comments.js";
+import { commentLikedUsers , replyLikedUsers } from "../controllers/posts/comments/comment_liked_users.js";
+import { likeComment,likeReply } from "../controllers/posts/comments/like_comment.js";
+import { dislikeComment, dislikeReply } from "../controllers/posts/comments/dislike_comment.js";
 
 const postsRouter = express.Router();
 
@@ -26,5 +30,15 @@ postsRouter.post("/add-comment/:postId",isAuthenticated,addComment);
 postsRouter.post("/add-reply/:commentId",isAuthenticated,addReply);
 postsRouter.post("/remove-comment/:commentId",isAuthenticated,removeComment);
 postsRouter.post("/remove-reply/:replyId",isAuthenticated,removeReply);
+
+postsRouter.get("/all-comments/:postId",getComments);
+postsRouter.get("/all-replies/:commentId",getReplies);
+
+postsRouter.get("/comment-likes/:commentId",commentLikedUsers);
+postsRouter.get("/reply-likes/:replyId",replyLikedUsers);
+postsRouter.post("/like-comment/:commentId",isAuthenticated,likeComment);
+postsRouter.post("/like-reply/:replyId",isAuthenticated,likeReply);
+postsRouter.post("/dislike-comment/:commentId",isAuthenticated,dislikeComment);
+postsRouter.post("/dislike-reply/:replyId",isAuthenticated,dislikeReply);
 
 export {postsRouter};

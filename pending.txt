@@ -6,17 +6,6 @@ websockets.io for =======
 
 ===normal routes===
 
-comment reply users likes change show users
-
-remove comment
-remove reply
-get all comments [pagination]
-get all replies [pagination]
-like comment
-like reply
-dislike comment
-dislike reply
-
 story add
 story delete
 story view
@@ -35,5 +24,12 @@ get users profile
 
 decrease rate limit
 sort deleted null data 
+security revealing object ids
+at the end try to exploit your own api
 
 
+//JUST DON'T REVEAL ANOTHER USERS OBJECT ID ANYWHERE BECAUSE ALL OPERATIONS ARE
+MADE ON THAT OBJECT ID SECURITY OF USER.
+POST'S ID , LIKE'S ID, COMMENT'S ID YOU MAY REVEAL ALL BUT ALL HAVE SAME LOGIC
+THAT REQ.USERID MUST MATCH THE OPERATION ID SO THAT'S NOT AN ISSUE
+BUT IF YOU ARE REVEALONG USER OBJECT ID THATS OBVIOUSLY A BIG ISSUE.

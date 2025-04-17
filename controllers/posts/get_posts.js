@@ -12,7 +12,6 @@ export const getAllPosts = async (req, res) => {
         return res.status(200).json({
             success: true,
             posts,
-            results: posts.length
         });
     } catch (e) {
         serverError(res, e);
@@ -43,7 +42,7 @@ export const getFollowingPosts = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            posts
+            posts,
         });
     } catch (e) {
         serverError(res, e);

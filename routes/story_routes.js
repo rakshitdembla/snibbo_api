@@ -8,6 +8,6 @@ const storyRouter = express.Router();
 
 storyRouter.post("/create",isAuthenticated,addStory);
 storyRouter.post("/view/:storyId",isAuthenticated,viewStory);
-storyRouter.post("/delete/:storyId",isAuthenticated,viewStory);
+storyRouter.delete("/delete/:storyId",isAuthenticated,deleteStory);
 
 export { storyRouter }

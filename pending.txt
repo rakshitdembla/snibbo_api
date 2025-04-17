@@ -6,12 +6,8 @@ websockets.io for =======
 
 ===normal routes===
 
-post likes users list
-
 comment reply users likes change show users
 
-add comment
-add reply
 remove comment
 remove reply
 get all comments [pagination]

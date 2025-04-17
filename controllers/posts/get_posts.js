@@ -8,7 +8,7 @@ export const getAllPosts = async (req, res) => {
         const limit = Number(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const posts = await Post.find({}).select("-postComments").populate({ path: "userId", model: "users", select: "username name profilePicture isVerified" }).skip(skip).limit(limit);
+        const posts = await Post.find({}).populate({ path: "userId", model: "users", select: "username name profilePicture isVerified" }).skip(skip).limit(limit);
         return res.status(200).json({
             success: true,
             posts,

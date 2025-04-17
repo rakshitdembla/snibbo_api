@@ -1,0 +1,39 @@
+import {Post} from "../../../models/Post.js";
+import { serverError } from "../../../utils/server_error_res.js";
+import mongoose from "mongoose";
+
+export const likedUsers = async (req,res) => {
+    try {
+        const { postId } = req.params;
+
+                if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Please provide a valid post id"
+                    });
+                }
+        
+                const post = await Post.findById(postId).lean();
+        
+                if (!post) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "Post not found!"
+                    });
+                }
+
+                const users = await Post.findById(postId).select("postLikes -_id").populate({
+                    path: "postLikes",
+                    model: "users",
+                    select: "username name profilePicture isVerified"
+                });
+
+               return res.status(200).json({
+                    success: true,
+                    users
+                });
+
+    } catch(e) {
+        serverError(res,e);
+    }
+}

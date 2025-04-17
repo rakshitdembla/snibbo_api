@@ -1,12 +1,43 @@
-story expire in 24hours,
-
 websockets.io for =======
 
 - last seen
--chat
--notifications
+- chat
+- notifications
 
+===normal routes===
 
+post likes users list
 
------ MONGOOSE ------ PAGINATION IN API
+comment reply users likes change show users
+
+add comment
+add reply
+remove comment
+remove reply
+get all comments [pagination]
+get all replies [pagination]
+like comment
+like reply
+dislike comment
+dislike reply
+
+story add
+story delete
+story view
+story expire
+
+report api
+saved posts - save and fetch
+
+follow add and remove
+
+fetch user followers followings
+update user profile
+get users profile
+
+============
+
+decrease rate limit
+sort deleted null data 
+
 

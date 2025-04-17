@@ -14,8 +14,9 @@ const replySchema = new mongoose.Schema({
     },
 
     replyLikes: {
-        type: Number,
-        default: 0
+       type: [ObjectId],
+       ref: "users",
+       default: []
     }
 },
 

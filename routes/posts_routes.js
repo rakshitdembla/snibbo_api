@@ -4,7 +4,9 @@ import { getAllPosts,getFollowingPosts } from "../controllers/posts/get_posts.js
 import {deletePost} from "../controllers/posts/delete_post.js";
 import { createPost } from "../controllers/posts/create_post.js";
 import { updatePost } from "../controllers/posts/update_post.js";
-import {likePost, dislikePost} from "../controllers/posts/like_post.js"
+import {likePost} from "../controllers/posts/like/like_post.js";
+import {dislikePost} from "../controllers/posts/like/dislike_post.js";
+import { likedUsers } from "../controllers/posts/like/liked_users.js";
 
 const postsRouter = express.Router();
 
@@ -16,5 +18,6 @@ postsRouter.patch("/update/:postId",isAuthenticated,updatePost);
 
 postsRouter.post("/like/:postId",isAuthenticated,likePost);
 postsRouter.post("/dislike/:postId",isAuthenticated,dislikePost);
+postsRouter.post("/liked-users/:postId",likedUsers);
 
 export {postsRouter};

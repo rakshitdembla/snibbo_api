@@ -59,6 +59,12 @@ const userSchema = new mongoose.Schema({
         default: []
     },
 
+    savedPosts: {
+        type: [ObjectId],
+        ref: "posts",
+        default: []
+    },
+
     isVerified: {
         type: Boolean,
         default: false

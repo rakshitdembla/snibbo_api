@@ -13,8 +13,9 @@ const commentSchema = new mongoose.Schema({
     },
 
     commentLike: {
-        type: Number,
-        default: 0
+        type: [ObjectId],
+        ref: "users",
+        default: []
     },
 
     commentReplies: {

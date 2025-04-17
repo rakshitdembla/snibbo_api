@@ -10,6 +10,7 @@ story add
 story delete
 story view
 story expire
+story get
 
 report api
 saved posts - save and fetch

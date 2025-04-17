@@ -6,9 +6,6 @@ websockets.io for =======
 
 ===normal routes===
 
-story add
-story delete
-story view
 story expire
 story get
 

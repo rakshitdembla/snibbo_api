@@ -3,11 +3,9 @@ websockets.io for =======
 - last seen
 - chat
 - notifications
+- story expire in 24hours
 
 ===normal routes===
-
-story expire
-story get
 
 report api
 saved posts - save and fetch

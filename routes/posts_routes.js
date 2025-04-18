@@ -13,6 +13,7 @@ import { getComments,getReplies } from "../controllers/posts/comments/get_commen
 import { commentLikedUsers , replyLikedUsers } from "../controllers/posts/comments/comment_liked_users.js";
 import { likeComment,likeReply } from "../controllers/posts/comments/like_comment.js";
 import { dislikeComment, dislikeReply } from "../controllers/posts/comments/dislike_comment.js";
+import { savePost } from "../controllers/posts/saved/save_post.js";
 
 const postsRouter = express.Router();
 
@@ -40,5 +41,7 @@ postsRouter.post("/like-comment/:commentId",isAuthenticated,likeComment);
 postsRouter.post("/like-reply/:replyId",isAuthenticated,likeReply);
 postsRouter.post("/dislike-comment/:commentId",isAuthenticated,dislikeComment);
 postsRouter.post("/dislike-reply/:replyId",isAuthenticated,dislikeReply);
+
+postsRouter.post("/save/:postId",isAuthenticated,savePost);
 
 export {postsRouter};

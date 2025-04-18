@@ -14,6 +14,7 @@ import { commentLikedUsers , replyLikedUsers } from "../controllers/posts/commen
 import { likeComment,likeReply } from "../controllers/posts/comments/like_comment.js";
 import { dislikeComment, dislikeReply } from "../controllers/posts/comments/dislike_comment.js";
 import { savePost } from "../controllers/posts/saved/save_post.js";
+import { getSavedPosts } from "../controllers/posts/saved/user_saved_posts.js";
 
 const postsRouter = express.Router();
 
@@ -43,5 +44,7 @@ postsRouter.post("/dislike-comment/:commentId",isAuthenticated,dislikeComment);
 postsRouter.post("/dislike-reply/:replyId",isAuthenticated,dislikeReply);
 
 postsRouter.post("/save/:postId",isAuthenticated,savePost);
+postsRouter.get("/saved",isAuthenticated,getSavedPosts);
+postsRouter.post("/remove-saved/:postId",isAuthenticated,getSavedPosts);
 
 export {postsRouter};

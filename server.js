@@ -14,12 +14,13 @@ const app = express();
 const port = 3000;
 
 const cpus = os.cpus().length;
+
 const limiter = ratelimit({
     max: 600,
     windowMs: 60 * 60 * 1000,
     message: "Too many requests. Please try again later"
 
-})
+});
 
 try {
 

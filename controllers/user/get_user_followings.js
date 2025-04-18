@@ -4,6 +4,9 @@ import { serverError } from "../../utils/server_error_res.js";
 export const getUserFollowings = async (req, res) => {
     try {
         const { username } = req.params;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
         const user = await User.findOne({
             username: username
@@ -11,7 +14,7 @@ export const getUserFollowings = async (req, res) => {
             path: "followings",
             model: "users",
             select: "-_id name username profilePicture isVerified"
-        });
+        }).skip(skip).limit(limit);
 
         if (!user) {
             return res.status(400).json({

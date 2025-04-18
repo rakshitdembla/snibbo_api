@@ -26,12 +26,12 @@ export const followUser = async (req, res) => {
 
         if (!userToFollow.followers.includes(userId)) {
             userToFollow.followers.push(userId);
-            currentUser.followings.push(userToFollow._id);
+          currentUser.followings.push(userToFollow._id);
 
             await userToFollow.save();
             await currentUser.save();
 
-            res.status(200).json({
+            res.status(202).json({
                 success: true,
                 message: 'User followed successfully'
             });

@@ -18,13 +18,13 @@ export const unfollowUser = async (req, res) => {
         }
 
         if (userToUnfollow.followers.includes(userId)) {
-            userToUnfollow.followers.pull(userId);
-            currentUser.followings.pull(userToUnfollow._id);
+             userToUnfollow.followers.pull(userId);
+             currentUser.followings.pull(userToUnfollow._id);
 
             await userToUnfollow.save();
             await currentUser.save();
 
-            res.status(200).json({
+            res.status(202).json({
                 success: true,
                 message: 'User Unfollowed successfully'
             });

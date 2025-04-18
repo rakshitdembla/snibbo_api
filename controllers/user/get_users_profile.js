@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
 import { User } from "../../models/User.js";
-import { serveError, serverError } from "../../utils/server_error_res.js";
+import mongoose from "mongoose";
+import { serverError } from "../../utils/server_error_res.js";
 
 export const getUserProfile = async (req, res) => {
     try {
         const { username } = req.params;
 
-        const user = await User.findOne({ username: username }).select("-_id -savedPosts").populate([
+        const user = await User.findOne({ username: username }).select("-_id -savedPosts -email -password -updatedAt -__v").populate([
             {
                 path: "followers",
                 model: "users",

@@ -8,7 +8,7 @@ import { authRouter } from "./routes/auth_routes.js";
 import { postsRouter } from "./routes/posts_routes.js";
 import { storyRouter } from "./routes/story_routes.js";
 import { reportRouter } from "./routes/report_routes.js";
-import { userRouter } from "./routes/user_routes.js";
+import { userRoutes } from "./routes/user_routes.js";
 
 dotenv.config()
 const app = express();
@@ -49,7 +49,7 @@ try {
             app.use("/api/posts", postsRouter);
             app.use("/api/story",storyRouter);
             app.use("/api/report",reportRouter);
-            app.use("/api/user",userRouter);
+            app.use("/api/user",userRoutes);
         }
         serverConnection();
     }

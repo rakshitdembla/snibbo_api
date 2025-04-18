@@ -16,7 +16,7 @@ export const removeFromFollowing = async (req, res) => {
             });
         }
 
-        if (currentUser.followers.includes(userToRemove)) {
+        if (currentUser.followers.includes(userToRemove._id)) {
             currentUser.followers.pull(userToRemove._id);
             userToRemove.followings.pull(userId);
 

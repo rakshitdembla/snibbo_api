@@ -1,45 +1,38 @@
 import { User } from "../../models/User.js";
 import { serverError } from "../../utils/server_error_res.js";
 
-export const followUser = async (req, res) => {
+export const unfollowUser = async (req, res) => {
     try {
 
         const userId = req.userId;
         const { username } = req.params;
 
-        const userToFollow = await User.findOne({ username: username });
+        const userToUnfollow = await User.findOne({ username: username });
         const currentUser = await User.findById(userId);
 
-        if (!userToFollow) {
+        if (!userToUnfollow) {
             return res.status(400).json({
                 success: false,
                 message: "User not found."
             });
         }
 
-        if (userToFollow._id.equals(userId)) {
-            return res.status(400).json({
-                success: true,
-                message: "You can't follow yourself."
-            })
-        }
+        if (userToUnfollow.followers.includes(userId)) {
+            userToUnfollow.followers.pull(userId);
+            currentUser.followings.pull(userToUnfollow._id);
 
-        if (!userToFollow.followers.includes(userId)) {
-            userToFollow.followers.push(userId);
-            currentUser.followings.push(userToFollow._id);
-
-            await userToFollow.save();
+            await userToUnfollow.save();
             await currentUser.save();
 
             res.status(200).json({
                 success: true,
-                message: 'User followed successfully'
+                message: 'User Unfollowed successfully'
             });
         }
         else {
             res.status(400).json({
                 success: false,
-                message: 'Already following this user.'
+                message: "You don't follow this user."
             });
         }
 

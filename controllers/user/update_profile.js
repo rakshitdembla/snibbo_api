@@ -5,7 +5,7 @@ export const updateUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).lean();
 
     const { username } = req.body || user.username;
     const { name } = req.body || user.name;
@@ -19,7 +19,7 @@ export const updateUserProfile = async (req, res) => {
       bio: bio
     }, {
       new: true
-    }).select("-_id");
+    }).select("-_id name username profilePicture bio");
 
     return res.status(201).json({
       success: true,

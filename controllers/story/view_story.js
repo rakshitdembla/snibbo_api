@@ -7,26 +7,31 @@ export const viewStory = async (req, res) => {
         const userId = req.userId;
         const { storyId } = req.params;
 
-        const story = await Story.findById(storyId).lean();
-
-        if (!story|| mongoose.Types.ObjectId.isValid(storyId)) {
+        if (!storyId || !mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(404).json({
                 success: false,
                 message: "Story not found or Invalid story id."
             });
         }
 
-        await Story.findByIdAndUpdate(storyId, {
+        const story = await Story.findByIdAndUpdate(storyId, {
             $addToSet: {
                 storyViews: userId
             }
         });
 
+        if (!story) {
+            return res.status(404).json({
+                success: false,
+                message: "Story not found or Invalid story id."
+            });
+        }
+
         return res.status(202).json({
             success: true,
             message: "Story view added successfully."
         });
-        
+
     } catch (e) {
         serverError(res, e);
     }

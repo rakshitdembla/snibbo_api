@@ -1,10 +1,9 @@
 import { User } from "../../models/User.js";
 import bcrypt from 'bcrypt';
 import { serverError } from "../../utils/server_error_res.js";
-import jwt from "jsonwebtoken";
 
 export const loginController = async (req, res) => {
-
+    
     try {
 
         const { email, password } = req.body;
@@ -15,7 +14,7 @@ export const loginController = async (req, res) => {
                 message: "Email & Password is mandatory in body."
             });
         }
-        const user = await User.findOne({ email }).lean().select("-_id");
+        const user = await User.findOne({ email: email }).lean();
 
         if (!user) {
             return res.status(401).json({
@@ -35,17 +34,12 @@ export const loginController = async (req, res) => {
             })
         }
 
-        const token = jwt.sign({userId: user._id},process.env.JWT_SECRET_KEY,{
-                    expiresIn: "7d"
-                });
-
         return res.status(200).json({
             success: true,
             message: "User logged-in successfully!",
-            token,
             user
         });
     } catch (e) {
-        serverError(res, e);
+        serverError(res,e);
     }
 }

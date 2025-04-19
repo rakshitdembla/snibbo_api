@@ -6,7 +6,6 @@ export const updatePost = async (req, res) => {
     try {
         const { postId } = req.params;
         const { captions } = req.body;
-        const contentCaptions = captions || null;
     
         if (!postId || !mongoose.Types.ObjectId.isValid(postId)) {
             return res.status(400).json({
@@ -15,7 +14,8 @@ export const updatePost = async (req, res) => {
             })
         }
         
-        const post = await Post.findById(postId).lean();
+        const post = await Post.findById(postId);
+        const contentCaptions = captions || post.postCaption;
 
         if (!post) {
             return res.status(404).json({
@@ -32,16 +32,16 @@ export const updatePost = async (req, res) => {
             });
         }
 
-        const updatePost = await Post.findByIdAndUpdate(postId, {
-            postCaption: contentCaptions
-        }, {
-            new: true
-        });
+        post.postCaption = contentCaptions;
+        await post.save();
+
+        const updatedPost = post.toObject();
+        delete updatedPost.userId;
 
         return res.status(202).json({
             success: true,
             message: "Post updated successfully!",
-            updatePost
+            updatedPost         
         });
 
     } catch (e) {

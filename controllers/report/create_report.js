@@ -6,7 +6,7 @@ export const submitReport = async (req, res) => {
     try {
         const { contentId } = req.params;
         const userId = req.userId;
-        const { reportDesc,reportFor } = req.body;
+        const { reportDesc, reportFor } = req.body;
 
         if (!contentId || !mongoose.Types.ObjectId.isValid(contentId)) {
             return res.status(400).json({
@@ -27,13 +27,15 @@ export const submitReport = async (req, res) => {
             reportDesc: reportDesc,
             reportFor: reportFor,
             reportedBy: userId,
-
         });
+
+        const submittedReport = report.toObject();
+        delete submittedReport.reportedBy;
 
         return res.status(202).json({
             success: true,
             message: "Report submitted successfully.",
-            report
+            submittedReport
         });
 
 

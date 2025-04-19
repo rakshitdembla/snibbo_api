@@ -13,8 +13,12 @@ export const getUserFollowers = async (req, res) => {
         }).select("-_id followers").populate({
             path: "followers",
             model: "users",
+            options: {
+                skip,
+                limit
+            },
             select: "-_id name username profilePicture isVerified"
-        }).skip(skip).limit(limit);
+        });
 
         if (!user) {
             return res.status(400).json({

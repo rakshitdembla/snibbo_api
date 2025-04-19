@@ -17,20 +17,22 @@ export const commentLikedUsers = async (req, res) => {
             })
         }
 
-        const comment = await Comment.findById(commentId).lean();
+        const likedUsers = await Comment.findById(commentId).select("commentLike").populate({
+            path: "commentLike",
+            model: "users",
+            options: {
+                skip,
+                limit
+            },
+            select: "-_id name username isVerified profilePicture"
+        });
 
-        if (!comment) {
+        if (!likedUsers) {
             return res.status(404).json({
                 success: false,
                 message: "Comment not found."
             });
         }
-
-        const likedUsers = await Comment.findById(commentId).select("commentLike -_id").populate({
-            path: "commentLike",
-            model: "users",
-            select: "name username isVerified profilePicture"
-        }).skip(skip).limit(limit);
 
         return res.status(200).json({
             success: true,
@@ -56,25 +58,28 @@ export const replyLikedUsers = async (req, res) => {
             })
         }
 
-        const reply = await Reply.findById(replyId).lean();
+        const likedUsers = await Reply.findById(replyId).select("replyLikes -_id").populate({
+            path: "replyLikes",
+            model: "users",
+            options: {
+                skip,
+                limit
+            },
+            select: "-_id name username isVerified profilePicture"
+        });
 
-        if (!reply) {
+        if (!likedUsers) {
             return res.status(404).json({
                 success: false,
                 message: "Reply not found."
             });
         }
 
-        const likedUsers = await Reply.findById(replyId).select("replyLikes -_id").populate({
-            path: "replyLikes",
-            model: "users",
-            select: "name username isVerified profilePicture"
-        }).skip(skip).limit(limit);
-
         return res.status(200).json({
             success: true,
             likedUsers,
         });
+
     } catch (e) {
         serverError(res, e);
     }

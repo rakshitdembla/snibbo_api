@@ -11,18 +11,17 @@ export const followingStories = async (req, res) => {
         const stories = await User.findById(userId).select("followings").populate({
             path: "followings",
             model: "users",
-            select: "-_id userStories",
+            options: {
+                skip,
+                limit
+            },
+            select: "-_id userStories name username isVerified profilePicture",
             populate: {
-                path: userStories,
+                path: "userStories",
                 model: "stories",
-                select: "-storyViews",
-                populate: {
-                    path: "userId",
-                    model: "users",
-                    select: "name username profilePicture isVerified"
-                }
+                select: "_id"
             }
-        }).skip(skip).limit(limit);
+        });
 
         return res.status(200).json({
             success: true,

@@ -14,15 +14,24 @@ export const createPost = async (req, res) => {
                 message: "Please provide post content."
             });
         }
-        const post = await Post.create({
+        const createPost = await Post.create({
             userId: userId,
             postContent: content,
             postCaption: postCaption
         });
 
-        const userStories = await User.findByIdAndUpdate(userId,{
+        await User.findByIdAndUpdate(userId, {
             $addToSet: {
-                userPosts: post._id
+                userPosts: createPost._id
+            }
+        });
+
+        const post = createPost.toObject();
+        delete post.userId;
+
+        const userStories = await User.findByIdAndUpdate(userId, {
+            $addToSet: {
+                userPosts: createPost._id
             }
         });
 

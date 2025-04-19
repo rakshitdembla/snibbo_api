@@ -20,16 +20,19 @@ export const addStory = async (req, res) => {
             storyContent: storyContent,
         });
 
-        const userStories = await User.findByIdAndUpdate(userId,{
+        await User.findByIdAndUpdate(userId, {
             $addToSet: {
                 userStories: story._id
             }
         });
 
+        const createdStory = story.toObject();
+        delete createdStory.userId;
+
         return res.status(201).json({
             success: true,
             message: "Story added successfully.",
-            story
+            createdStory
         })
 
 

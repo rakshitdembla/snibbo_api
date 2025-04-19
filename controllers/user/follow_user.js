@@ -25,7 +25,7 @@ export const followUser = async (req, res) => {
         }
 
         if (!userToFollow.followers.includes(userId)) {
-            userToFollow.followers.push(userId);
+          userToFollow.followers.push(userId);
           currentUser.followings.push(userToFollow._id);
 
             await userToFollow.save();

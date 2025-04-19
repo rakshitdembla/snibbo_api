@@ -11,32 +11,34 @@ export const dislikeComment = async (req, res) => {
         if (!commentId || !mongoose.Types.ObjectId.isValid(commentId)) {
             return res.status(400).json({
                 success: false,
-                message: "Please provide a valid comment id"
+                message: "Please provide a valid comment id."
             })
         }
 
-        const comment = await Comment.findById(commentId).lean();
+        const comment = await Comment.findById(commentId);
 
         if (!comment) {
             return res.status(404).json({
                 success: false,
-                message: "Comment not found!"
+                message: "Comment not found."
             });
         }
 
-        const like = await Comment.findByIdAndUpdate(commentId, {
-            $pull: {
-                commentLike: userId
-            }
-        }, {
-            new: true
-        });
+        if (comment.commentLike.includes(userId)) {
+            comment.commentLike.pull(userId);
+            await comment.save();
 
-        return res.status(202).json({
-            success: true,
-            message: "Comment like removed successfully",
-            like
-        });
+            return res.status(202).json({
+                success: true,
+                message: "Comment like removed successfully",
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "You haven't liked this comment.",
+            });
+        }
+
     } catch (e) {
         serverError(res, e);
 
@@ -54,7 +56,7 @@ export const dislikeReply = async (req, res) => {
             })
         }
 
-        const reply = await Reply.findById(replyId).lean();
+        const reply = await Reply.findById(replyId);
 
         if (!reply) {
             return res.status(404).json({
@@ -63,19 +65,22 @@ export const dislikeReply = async (req, res) => {
             });
         }
 
-        const like = await Reply.findByIdAndUpdate(replyId, {
-            $pull: {
-                replyLikes: userId
-            }
-        }, {
-            new: true
-        });
+        if (reply.replyLikes.includes(userId)) {
+            reply.replyLikes.pull(userId);
+            await reply.save();
 
-        return res.status(202).json({
-            success: true,
-            message: "Reply like removed successfully",
-            like
-        });
+            return res.status(202).json({
+                success: true,
+                message: "Reply like removed successfully",
+            });
+
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "You've haven't liked this reply.",
+            });
+        }
+
     } catch (e) {
         serverError(res, e);
 

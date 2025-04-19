@@ -24,16 +24,24 @@ export const removeSavedPost = async (req, res) => {
             })
         }
 
-        await User.findByIdAndUpdate(userId, {
-            $pull: {
-                savedPosts: postId
-            }
-        });
+        const user = await User.findById(userId);
 
-        return res.status(201).json({
-            success: true,
-            message: "Post removed from saved-posts successfully."
-        });
+        if (user.savedPosts.includes(postId)) {
+
+            user.savedPosts.pull(postId);
+            await user.save();
+
+            return res.status(201).json({
+                success: true,
+                message: "Post removed from saved-posts successfully."
+            });
+
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "Saved posts doesn't contains this post.",
+            });
+        }
 
     } catch (e) {
         serverError(res, e);

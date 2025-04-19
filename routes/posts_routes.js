@@ -19,33 +19,41 @@ import { removeSavedPost } from "../controllers/posts/saved/remove_saved_post.js
 
 const postsRouter = express.Router();
 
-postsRouter.get("/all",getAllPosts);
-postsRouter.get("/followings/:userId",isAuthenticated,getFollowingPosts);
-postsRouter.delete("/delete/:postId",isAuthenticated,deletePost);
-postsRouter.post("/create",isAuthenticated,createPost);
-postsRouter.patch("/update/:postId",isAuthenticated,updatePost);
+// Public Routes
+postsRouter.get("/all", getAllPosts);
+postsRouter.get("/liked-users/:postId", likedUsers);
+postsRouter.get("/comment-likes/:commentId", commentLikedUsers);
+postsRouter.get("/reply-likes/:replyId", replyLikedUsers);
+postsRouter.get("/all-comments/:postId", getComments);
+postsRouter.get("/all-replies/:commentId", getReplies);
 
-postsRouter.post("/like/:postId",isAuthenticated,likePost);
-postsRouter.post("/dislike/:postId",isAuthenticated,dislikePost);
-postsRouter.post("/liked-users/:postId",likedUsers);
+// Post Actions
+postsRouter.post("/create", isAuthenticated, createPost);
+postsRouter.patch("/update/:postId", isAuthenticated, updatePost);
+postsRouter.delete("/delete/:postId", isAuthenticated, deletePost);
+postsRouter.get("/following-posts", isAuthenticated, getFollowingPosts);
 
-postsRouter.post("/add-comment/:postId",isAuthenticated,addComment);
-postsRouter.post("/add-reply/:commentId",isAuthenticated,addReply);
-postsRouter.post("/remove-comment/:commentId",isAuthenticated,removeComment);
-postsRouter.post("/remove-reply/:replyId",isAuthenticated,removeReply);
+// Post Interactions
+postsRouter.post("/like/:postId", isAuthenticated, likePost);
+postsRouter.post("/dislike/:postId", isAuthenticated, dislikePost);
 
-postsRouter.get("/all-comments/:postId",getComments);
-postsRouter.get("/all-replies/:commentId",getReplies);
+// Comment Actions
+postsRouter.post("/add-comment/:postId", isAuthenticated, addComment);
+postsRouter.delete("/remove-comment/:commentId", isAuthenticated, removeComment);
 
-postsRouter.get("/comment-likes/:commentId",commentLikedUsers);
-postsRouter.get("/reply-likes/:replyId",replyLikedUsers);
-postsRouter.post("/like-comment/:commentId",isAuthenticated,likeComment);
-postsRouter.post("/like-reply/:replyId",isAuthenticated,likeReply);
-postsRouter.post("/dislike-comment/:commentId",isAuthenticated,dislikeComment);
-postsRouter.post("/dislike-reply/:replyId",isAuthenticated,dislikeReply);
+// Reply Actions
+postsRouter.post("/add-reply/:commentId", isAuthenticated, addReply);
+postsRouter.delete("/remove-reply/:replyId", isAuthenticated, removeReply);
 
-postsRouter.post("/save/:postId",isAuthenticated,savePost);
-postsRouter.get("/saved",isAuthenticated,getSavedPosts);
-postsRouter.post("/remove-saved/:postId",isAuthenticated,removeSavedPost);
+// Comment & Reply Interactions
+postsRouter.post("/like-comment/:commentId", isAuthenticated, likeComment);
+postsRouter.post("/dislike-comment/:commentId", isAuthenticated, dislikeComment);
+postsRouter.post("/like-reply/:replyId", isAuthenticated, likeReply);
+postsRouter.post("/dislike-reply/:replyId", isAuthenticated, dislikeReply);
+
+// Saved Posts
+postsRouter.post("/save/:postId", isAuthenticated, savePost);
+postsRouter.get("/saved", isAuthenticated, getSavedPosts);
+postsRouter.post("/remove-saved/:postId", isAuthenticated, removeSavedPost);
 
 export {postsRouter};

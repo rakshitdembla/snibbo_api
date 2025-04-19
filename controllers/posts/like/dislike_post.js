@@ -14,7 +14,7 @@ export const dislikePost = async (req, res) => {
             })
         }
 
-        const post = await Post.findById(postId).lean();
+        const post = await Post.findById(postId);
 
         if (!post) {
             return res.status(404).json({
@@ -23,18 +23,23 @@ export const dislikePost = async (req, res) => {
             });
         }
 
-        const like = await Post.findByIdAndUpdate(postId, {
-            $pull: { postLikes: userId }
+        if (post.postLikes.includes(userId)) {
+            post.postLikes.pull(userId);
 
-        }, {
-            new: true
-        });
+            await post.save();
 
-        return res.status(202).json({
-            success: true,
-            message: "Post's like removed successfully",
-            like
-        });
+            return res.status(202).json({
+                success: true,
+                message: "Post's like removed successfully",
+            });
+
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "You haven't liked this post.",
+            });
+        }
+
     } catch (e) {
         serverError(res, e);
 

@@ -23,17 +23,25 @@ export const savePost = async (req, res) => {
                 message: "Post not found."
             });
         }
+       
+        const user = await User.findById(userId);
 
-        const savedPost = await User.findByIdAndUpdate(userId, {
-            $addToSet: {
-                savedPosts: postId
-            }
-        });
+        if (!user.savedPosts.includes(postId)) {
 
-        return res.status(202).json({
-            success: true,
-            message: "Post saved successfully."
-        });
+            user.savedPosts.push(postId);
+            await user.save();
+
+            return res.status(202).json({
+                success: true,
+                message: "Post saved successfully.",
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "Saved posts already contains this post.",
+            });
+        }
+
 
     } catch (e) {
         serverError(res, e);

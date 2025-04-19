@@ -1,6 +1,5 @@
 import { User } from "../../models/User.js";
 import bcrypt from 'bcrypt';
-import jwt from "jsonwebtoken";
 import { serverError } from "../../utils/server_error_res.js";
 
 export const registerController = async (req, res) => {
@@ -10,19 +9,19 @@ export const registerController = async (req, res) => {
         if (!username, !name, !email, !password) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are mandatory in body."
+                message: "All fields are mandatory in the body."
             })
         }
-        const emailExists = await User.findOne({ email }).lean();
+        const emailExists = await User.findOne({ email: email }).lean();
 
         if (emailExists) {
             return res.status(400).json({
                 success: false,
-                message: "Email already exists!"
+                message: "Email already exists."
             });
         }
 
-        const usernameExists = await User.findOne({ username }).lean();
+        const usernameExists = await User.findOne({ username: username }).lean();
 
         if (usernameExists) {
             return res.status(400).json({
@@ -40,18 +39,10 @@ export const registerController = async (req, res) => {
             password: encryptedPassword
         });
 
-        const token = jwt.sign({userId: user._id},process.env.JWT_SECRET_KEY,{
-            expiresIn: "7d"
-        });
-
-        const userObj = user.toObject();
-        delete userObj._id;
-
         return res.status(201).json({
             success: true,
             message: "User created successfully!",
-            token,
-            userObj
+            user
         });
 
 

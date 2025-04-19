@@ -1,5 +1,6 @@
 import { Comment } from "../../../models/Comment.js";
 import { Reply } from "../../../models/Reply.js";
+import { Post } from "../../../models/Post.js";
 import mongoose from "mongoose";
 import { serverError } from "../../../utils/server_error_res.js";
 
@@ -31,6 +32,15 @@ export const removeComment = async (req, res) => {
             });
         }
 
+        await Post.updateMany({
+            postComments: commentId
+        },
+            {
+                $pull: {
+                    postComments: commentId
+                }
+            });
+
         await Comment.findByIdAndDelete(commentId);
 
         return res.status(202).json({
@@ -43,7 +53,7 @@ export const removeComment = async (req, res) => {
     }
 }
 
-export const removeReply = async(req,res) => {
+export const removeReply = async (req, res) => {
     try {
         const { replyId } = req.params;
         const userId = req.userId;
@@ -70,6 +80,15 @@ export const removeReply = async(req,res) => {
                 message: "You are not authorized to remove this reply."
             });
         }
+
+        await Comment.updateMany({
+            commentReplies: replyId
+        },
+            {
+                $pull: {
+                    commentReplies: replyId
+                }
+            });
 
         await Reply.findByIdAndDelete(replyId);
 

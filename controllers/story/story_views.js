@@ -13,7 +13,7 @@ export const storyViews = async (req, res) => {
 
         const story = await Story.findById(storyId).lean();
 
-        if (!story|| mongoose.Types.ObjectId.isValid(storyId)) {
+        if (!story|| !mongoose.Types.ObjectId.isValid(storyId)) {
             return res.status(404).json({
                 success: false,
                 message: "Story not found or Invalid story id."

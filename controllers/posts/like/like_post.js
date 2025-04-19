@@ -14,7 +14,7 @@ export const likePost = async (req, res) => {
             })
         }
 
-        const post = await Post.findById(postId).lean();
+        const post = await Post.findById(postId);
 
         if (!post) {
             return res.status(404).json({
@@ -23,20 +23,24 @@ export const likePost = async (req, res) => {
             });
         }
 
-        const like = await Post.findByIdAndUpdate(postId, {
-            $addToSet: { postLikes: userId }
+        if (!post.postLikes.includes(userId)) {
+            post.postLikes.push(userId);
 
-        }, {
-            new: true
-        });
+            await post.save();
 
-        return res.status(202).json({
-            success: true,
-            message: "Post liked successfully",
-            like
-        });
+            return res.status(202).json({
+                success: true,
+                message: "Post liked successfully",
+            });
+
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "You've already liked this post.",
+            });
+        }
+
     } catch (e) {
         serverError(res, e);
-
     }
 }

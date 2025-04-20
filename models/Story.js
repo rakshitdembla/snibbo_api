@@ -24,10 +24,13 @@ const storySchema = new mongoose.Schema({
         ref: "users",
         default: []
     },
+
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 60 * 60 * 24
+    }
 },
+);
 
-{
-    timestamps: true
-});
-
-export const Story = mongoose.model("stories",storySchema);
+export const Story = mongoose.model("stories", storySchema);

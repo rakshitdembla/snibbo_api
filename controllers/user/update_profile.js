@@ -11,15 +11,17 @@ export const updateUserProfile = async (req, res) => {
     const { name } = req.body || user.name;
     const { profilePicture } = req.body || user.profilePicture;
     const { bio } = req.body || user.bio;
+    const { isVerified } = req.body || user.isVerified;
 
     const updatedUser = await User.findByIdAndUpdate(userId, {
       username: username,
       name: name,
       profilePicture: profilePicture,
-      bio: bio
+      bio: bio,
+      isVerified: isVerified
     }, {
       new: true
-    }).select("-_id name username profilePicture bio");
+    }).select("-_id name username profilePicture bio isVerified");
 
     return res.status(201).json({
       success: true,

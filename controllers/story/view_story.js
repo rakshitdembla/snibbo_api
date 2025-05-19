@@ -14,11 +14,7 @@ export const viewStory = async (req, res) => {
             });
         }
 
-        const story = await Story.findByIdAndUpdate(storyId, {
-            $addToSet: {
-                storyViews: userId
-            }
-        });
+        const story = await Story.findById(storyId).lean();
 
         if (!story) {
             return res.status(404).json({
@@ -26,6 +22,20 @@ export const viewStory = async (req, res) => {
                 message: "Story not found or Invalid story id."
             });
         }
+
+        if (story.userId == userId) {
+            return res.status(404).json({
+                success: false,
+                message: "You can't add yourself as a viewer to your own story."
+            });
+        }
+
+
+        await Story.findByIdAndUpdate(storyId, {
+            $addToSet: {
+                storyViews: userId
+            }
+        });
 
         return res.status(202).json({
             success: true,

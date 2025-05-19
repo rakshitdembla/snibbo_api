@@ -1,16 +1,16 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { getUserProfile } from "../controllers/user/get_users_profile.js";
 import { getUserFollowings } from "../controllers/user/get_user_followings.js";
 import { getUserFollowers } from "../controllers/user/get_user_followers.js";
 import { followUser } from "../controllers/user/follow_user.js";
 import { unfollowUser } from "../controllers/user/unfollow_user.js";
 import { removeFromFollowing } from "../controllers/user/remove_from_following.js";
 import { updateUserProfile } from "../controllers/user/update_profile.js";
+import { getUserByUsername } from "../controllers/user/get_user_by_username.js";
 
 const userRoutes = express.Router();
 
-userRoutes.get("/profile/:username", getUserProfile);
+userRoutes.get("/profile/:username", getUserByUsername);
 userRoutes.get("/followers/:username", getUserFollowers);
 userRoutes.get("/followings/:username", getUserFollowings);
 

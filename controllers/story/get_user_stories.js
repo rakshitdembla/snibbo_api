@@ -5,7 +5,7 @@ export const getUserStories = async (req, res) => {
     try {
         const { username } = req.params;
 
-        const user = await User.findOne({ username: username }).select("-_id name username isVerified profilePicture userStories").populate({
+        const user = await User.findOne({ username: username }).select("-_id name username createdAt isVerified profilePicture userStories").populate({
             path: "userStories",
             model: "stories",
             select: "-userId",

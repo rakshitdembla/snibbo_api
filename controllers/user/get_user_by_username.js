@@ -2,7 +2,7 @@ import { User } from "../../models/User.js";
 import mongoose from "mongoose";
 import { serverError } from "../../utils/server_error_res.js";
 
-export const getUserProfile = async (req, res) => {
+export const getUserByUsername = async (req, res) => {
     try {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;

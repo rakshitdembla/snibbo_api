@@ -13,6 +13,11 @@ const postSchema = new mongoose.Schema({
         required: true
     },
 
+    contentType: {
+        type: String,
+        required: true
+    },
+
     postCaption: {
         type: String,
         maxlength: 2000

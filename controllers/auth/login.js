@@ -14,7 +14,7 @@ export const loginController = async (req, res) => {
                 message: "Email & Password is mandatory in body."
             });
         }
-        const user = await User.findOne({ email: email }).lean();
+        const user = await User.findOne({ email: email }).select("_id username name password email profilePicture isVerified bio").lean();
 
         if (!user) {
             return res.status(401).json({

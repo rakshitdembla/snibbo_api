@@ -87,7 +87,7 @@ try {
     }
 
     else {
-        server.listen(port, () => { console.log(`Server running at ${port}`) });
+        server.listen(port, '0.0.0.0', () => { console.log(`Server running at ${port}`) });
 
         async function serverConnection() {
             await mongoose.connect(process.env.MONGOOSE_CONNECTION, {

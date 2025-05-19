@@ -5,19 +5,20 @@ import { serverError } from "../../utils/server_error_res.js";
 export const createPost = async (req, res) => {
     try {
         const userId = req.userId;
-        const { content, captions } = req.body;
+        const { content, captions,contentType } = req.body;
         const postCaption = captions ?? null;
 
-        if (!content) {
+        if (!content || !contentType) {
             return res.status(400).json({
                 success: false,
-                message: "Please provide post content."
+                message: "Please provide post content & its type."
             });
         }
         const createPost = await Post.create({
             userId: userId,
             postContent: content,
-            postCaption: postCaption
+            postCaption: postCaption,
+            contentType : contentType
         });
 
         await User.findByIdAndUpdate(userId, {

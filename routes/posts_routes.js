@@ -16,11 +16,11 @@ import { dislikeComment, dislikeReply } from "../controllers/posts/comments/disl
 import { savePost } from "../controllers/posts/saved/save_post.js";
 import { getSavedPosts } from "../controllers/posts/saved/user_saved_posts.js";
 import { removeSavedPost } from "../controllers/posts/saved/remove_saved_post.js";
+import { getMyPosts } from "../controllers/posts/get_my_posts.js";
 
 const postsRouter = express.Router();
 
 // Public Routes
-postsRouter.get("/all", getAllPosts);
 postsRouter.get("/liked-users/:postId", likedUsers);
 postsRouter.get("/comment-likes/:commentId", commentLikedUsers);
 postsRouter.get("/reply-likes/:replyId", replyLikedUsers);
@@ -32,6 +32,8 @@ postsRouter.post("/create", isAuthenticated, createPost);
 postsRouter.patch("/update/:postId", isAuthenticated, updatePost);
 postsRouter.delete("/delete/:postId", isAuthenticated, deletePost);
 postsRouter.get("/following-posts", isAuthenticated, getFollowingPosts);
+postsRouter.get("/all",isAuthenticated, getAllPosts);
+postsRouter.get("/my-posts",isAuthenticated, getMyPosts);
 
 // Post Interactions
 postsRouter.post("/like/:postId", isAuthenticated, likePost);

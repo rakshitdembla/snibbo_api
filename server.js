@@ -15,7 +15,6 @@ import { reportRouter } from "./routes/report_routes.js";
 import { userRoutes } from "./routes/user_routes.js";
 
 try {
-
     dotenv.config()
     const app = express();
     const port = 3000;

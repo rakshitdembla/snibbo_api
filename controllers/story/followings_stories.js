@@ -15,23 +15,31 @@ export const followingStories = async (req, res) => {
             populate: {
                 path: "userStories",
                 model: "stories",
-                select: "_id"
+                select: "storyViews"
             }
         });
 
-        const filteredFollowings = result.followings
+        const storyUsers = result.followings
             .filter(user => user.userStories.length > 0)
-            .map(user => ({
-                username: user.username,
-                name: user.name,
-                isVerified: user.isVerified,
-                profilePicture: user.profilePicture,
-            }))
-            .slice(skip, skip + limit);
+            .map(user => {
+                const storiesSeen = user.userStories.every(story =>
+                    story.storyViews.includes(userId)
+                );
+                return {
+                    username: user.username,
+                    name: user.name,
+                    isVerified: user.isVerified,
+                    profilePicture: user.profilePicture,
+                    storiesSeen: storiesSeen
+                }
+            }
+            );
+
+            const sortedStoryUsers = storyUsers.sort((a,b) => a.storiesSeen - b.storiesSeen).slice(skip, skip + limit);
 
         return res.status(200).json({
             success: true,
-            followings : filteredFollowings
+            followings: sortedStoryUsers
         });
 
     } catch (e) {

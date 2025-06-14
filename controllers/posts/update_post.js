@@ -35,13 +35,9 @@ export const updatePost = async (req, res) => {
         post.postCaption = contentCaptions;
         await post.save();
 
-        const updatedPost = post.toObject();
-        delete updatedPost.userId;
-
         return res.status(202).json({
             success: true,
-            message: "Post updated successfully!",
-            updatedPost         
+            message: "Post updated successfully!",      
         });
 
     } catch (e) {

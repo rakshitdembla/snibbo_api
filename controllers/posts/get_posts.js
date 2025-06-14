@@ -70,6 +70,71 @@ export const getAllPosts = async (req, res) => {
     }
 }
 
+export const explorePosts = async (req, res) => {
+    try {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const userId = req.userId;
+
+        const currentUser = await User.findById(userId).select("savedPosts");
+
+        const posts = await Post.find({})
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .populate("userId", "username name profilePicture isVerified");
+
+        const finalPosts = await Promise.all(
+            posts.map(async (post) => {
+
+                const postOwner = post.userId;
+                const postOwnerId = postOwner._id;
+
+                const stories = await Story.find({ userId: postOwnerId });
+
+                const hasActiveStories = stories.length > 0;
+                const isMyPost = userId == postOwnerId;
+
+                let isAllStoriesViewed = true;
+                if (!isMyPost) {
+                    if (hasActiveStories) {
+                        for (const story of stories) {
+                            if (!story.storyViews.includes(userId)) {
+                                isAllStoriesViewed = false;
+                                break;
+                            }
+                        }
+                    } else {
+                        isAllStoriesViewed = false;
+                    }
+                }
+
+                const userEntity = getUserEntity(
+                    postOwner,
+                    hasActiveStories,
+                    isAllStoriesViewed
+                );
+
+                return getFormattedPost(
+                    post,
+                    userEntity,
+                    userId,
+                    currentUser.savedPosts.includes(post._id)
+                );
+            })
+        );
+
+
+        return res.status(200).json({
+            success: true,
+            posts: finalPosts
+        });
+    } catch (e) {
+        serverError(res, e);
+    }
+}
+
 export const getFollowingPosts = async (req, res) => {
     try {
         const userId = req.userId;

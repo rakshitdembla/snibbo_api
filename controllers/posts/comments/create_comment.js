@@ -40,7 +40,7 @@ export const addComment = async (req, res) => {
         });
 
         post.postComments.push(comment._id);
-        post.save();
+        await post.save();
 
         const addedComment = comment.toObject();
         delete addedComment.userId;

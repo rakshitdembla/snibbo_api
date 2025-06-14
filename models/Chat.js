@@ -13,6 +13,22 @@ const chatSchema = new mongoose.Schema({
         ref: "messages"
     },
 
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
+
+    blockedBy: {
+        type: ObjectId,
+        ref: "users",
+        default: null
+    },
+
+    isPinned: {
+        type: Boolean,
+        defaul: false
+    }
+
 },
 
     {
@@ -21,4 +37,4 @@ const chatSchema = new mongoose.Schema({
 
 );
 
-export const Chat = mongoose.model("chats",chatSchema);
+export const Chat = mongoose.model("chats", chatSchema);

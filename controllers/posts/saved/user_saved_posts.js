@@ -6,14 +6,16 @@ import { getUserEntity } from "../../../utils/user_entity.js";
 
 export const getSavedPosts = async (req, res) => {
     try {
-
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 5;
         const skip = (page - 1) * limit;
+        const { username } = req.params;
+        const myId = req.userId;
 
-        const userId = req.userId;
-        const user = await User.findById(userId)
-            .select("username name profilePicture isVerified savedPosts -_id")
+        const currentUser = await User.findById(myId).select("savedPosts");
+
+        const user = await User.findOne({ username })
+            .select("username name profilePicture isVerified savedPosts _id")
             .populate({
                 path: "savedPosts",
                 options: { sort: { createdAt: -1 }, skip, limit },
@@ -23,6 +25,11 @@ export const getSavedPosts = async (req, res) => {
                 }
             });
 
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const userId = user._id;
         const posts = user.savedPosts;
 
         const savedPosts = await Promise.all(
@@ -31,16 +38,15 @@ export const getSavedPosts = async (req, res) => {
                 const postOwnerId = postOwner._id;
 
                 const stories = await Story.find({ userId: postOwnerId });
-
                 const hasActiveStories = stories.length > 0;
 
-                const isMyPost = userId == postOwnerId;
+                const isMyPost = myId == postOwnerId;
 
                 let isAllStoriesViewed = true;
                 if (!isMyPost) {
                     if (hasActiveStories) {
                         for (const story of stories) {
-                            if (!story.storyViews.includes(userId)) {
+                            if (!story.storyViews.includes(myId)) {
                                 isAllStoriesViewed = false;
                                 break;
                             }
@@ -48,7 +54,10 @@ export const getSavedPosts = async (req, res) => {
                     } else {
                         isAllStoriesViewed = false;
                     }
+                } else {
+                    isAllStoriesViewed = hasActiveStories;
                 }
+
                 const userEntity = getUserEntity(
                     postOwner,
                     hasActiveStories,
@@ -58,12 +67,12 @@ export const getSavedPosts = async (req, res) => {
                 return getFormattedPost(
                     post,
                     userEntity,
-                    userId,
-                    true
+                    myId,
+                    currentUser.savedPosts.includes(post._id)
                 );
-
             })
         );
+
         return res.status(200).json({
             success: true,
             posts: savedPosts
@@ -71,5 +80,4 @@ export const getSavedPosts = async (req, res) => {
     } catch (e) {
         serverError(res, e);
     }
-
-}
+};

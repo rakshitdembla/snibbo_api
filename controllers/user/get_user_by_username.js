@@ -4,13 +4,10 @@ import { serverError } from "../../utils/server_error_res.js";
 
 export const getUserByUsername = async (req, res) => {
     try {
-        const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 10;
-        const skip = (page - 1) * limit;
         const { username } = req.params;
         const userId = req.userId;
 
-        const result = await User.findOne({ username: username }).select("-_id -savedPosts -email -password -updatedAt -__v").populate([
+        const result = await User.findOne({ username: username }).select("-savedPosts -email -password -updatedAt -__v").populate([
             {
                 path: "userStories",
                 model: "stories",
@@ -27,20 +24,26 @@ export const getUserByUsername = async (req, res) => {
 
 
         const userObj = result.toObject();
-        const { userStories,followers,followings,userPosts, ...userWithoutStories } = userObj;
+        const { userStories,followers,followings,userPosts,_id, ...userWithoutStories } = userObj;
 
         const hasActiveStories = userStories && userStories.length > 0;
         const userFollowers = followers.length;
         const userFollowing = followings.length;
         const posts = userPosts.length;
         const isFollowedByMe = followers.map(f => f.toString()).includes(userId.toString());
+        const isMyProfile = _id == userId;
         let viewedAllStories = false;
 
+        if (isMyProfile && hasActiveStories) {
+            viewedAllStories = true
+        } else {
         if (hasActiveStories) {
             viewedAllStories = userStories.every(story =>
-                story.storyViews.includes(currentUserId.toString())
+                story.storyViews.includes(userId.toString())
             );
         }
+        }
+
 
         return res.status(200).json({
             success: true,
@@ -52,6 +55,7 @@ export const getUserByUsername = async (req, res) => {
                 hasActiveStories,
                 viewedAllStories,
                 isFollowedByMe,
+                isMyProfile
             }
         });
 

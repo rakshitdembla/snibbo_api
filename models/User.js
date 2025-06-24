@@ -74,17 +74,17 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-    
-    isOnline: {
-        type: Boolean,
-        default: false,
-    },
 
     blockedUsers: {
-    type: [ObjectId],
-    ref: "users",
-    default: []
-}
+        type: [ObjectId],
+        ref: "users",
+        default: []
+    },
+
+    isOnline: {
+        type: Boolean,
+        default: false
+    }
 
 },
 

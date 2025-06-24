@@ -22,10 +22,11 @@ const messageSchema = new mongoose.Schema({
         type: String
     },
 
-    isSeen: {
-        type: Boolean,
-        default: false
-    }
+    seenBy: {
+        type: [ObjectId],
+        ref: "users",
+        default: []
+    },
 
 },
 

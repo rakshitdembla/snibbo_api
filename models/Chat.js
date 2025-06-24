@@ -10,25 +10,9 @@ const chatSchema = new mongoose.Schema({
 
     lastMessage: {
         type: ObjectId,
-        ref: "messages"
+        ref: "messages",
+        default : null
     },
-
-    isBlocked: {
-        type: Boolean,
-        default: false
-    },
-
-    blockedBy: {
-        type: ObjectId,
-        ref: "users",
-        default: null
-    },
-
-    isPinned: {
-        type: Boolean,
-        defaul: false
-    }
-
 },
 
     {

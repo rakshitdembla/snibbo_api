@@ -15,7 +15,7 @@ export const followingStories = async (req, res) => {
             populate: {
                 path: "userStories",
                 model: "stories",
-                select: "storyViews"
+                select: "storyViews createdAt",
             }
         });
 
@@ -25,17 +25,30 @@ export const followingStories = async (req, res) => {
                 const storiesSeen = user.userStories.every(story =>
                     story.storyViews.includes(userId)
                 );
+
+                const sortedStories = user.userStories.sort((a, b) => {
+                    return b.createdAt - a.createdAt;
+                });
+
+                const latestStory = sortedStories[0];
                 return {
                     username: user.username,
                     name: user.name,
                     isVerified: user.isVerified,
                     profilePicture: user.profilePicture,
-                    storiesSeen: storiesSeen
+                    isAllStoriesViewed: storiesSeen,
+                    latestStory: latestStory,
                 }
             }
             );
 
-            const sortedStoryUsers = storyUsers.sort((a,b) => a.storiesSeen - b.storiesSeen).slice(skip, skip + limit);
+        const sortedStoryUsers = storyUsers.sort((a, b) => {
+            if (a.isAllStoriesViewed === b.isAllStoriesViewed) {
+                return b.latestStory.createdAt - a.latestStory.createdAt;
+            }
+            return a.isAllStoriesViewed - b.isAllStoriesViewed;
+        }).slice(skip, skip + limit);
+
 
         return res.status(200).json({
             success: true,

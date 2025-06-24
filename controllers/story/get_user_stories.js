@@ -12,7 +12,10 @@ export const getUserStories = async (req, res) => {
             populate: {
                 path: "storyViews",
                 model: "users",
-                select: "-_id username"
+                select: "-_id username",
+                sort : {
+                    createdAt : 1
+                }
             }
         });
 

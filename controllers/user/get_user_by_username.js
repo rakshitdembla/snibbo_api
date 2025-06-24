@@ -1,5 +1,4 @@
 import { User } from "../../models/User.js";
-import mongoose from "mongoose";
 import { serverError } from "../../utils/server_error_res.js";
 
 export const getUserByUsername = async (req, res) => {
@@ -27,13 +26,18 @@ export const getUserByUsername = async (req, res) => {
         const { userStories,followers,followings,userPosts,_id, ...userWithoutStories } = userObj;
 
         const hasActiveStories = userStories && userStories.length > 0;
+
         const userFollowers = followers.length;
         const userFollowing = followings.length;
         const posts = userPosts.length;
-        const isFollowedByMe = followers.map(f => f.toString()).includes(userId.toString());
-        const isMyProfile = _id == userId;
-        let viewedAllStories = false;
 
+        const isFollowedByMe = followers.map(f => f.toString()).includes(userId.toString());
+
+        const isMyProfile = _id == userId;
+
+
+        let viewedAllStories = false;
+        
         if (isMyProfile && hasActiveStories) {
             viewedAllStories = true
         } else {

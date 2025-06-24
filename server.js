@@ -10,9 +10,10 @@ import { storyRouter } from "./routes/story_routes.js";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
-import { User } from "./models/User.js";
+import { socketConnectionHandler } from "./controllers/sockets/socket_controller.js"
 import { reportRouter } from "./routes/report_routes.js";
 import { userRoutes } from "./routes/user_routes.js";
+import {chatRouter} from "./routes/chat_routes.js";
 
 try {
     dotenv.config()
@@ -20,51 +21,13 @@ try {
     const port = 3000;
     const server = http.createServer(app);
     const io = new Server(server, {
+        pingInterval: 25000,
+        pingTimeout: 20000
+        ,
         cors: {
-            origin: "*",
-            credentials: true
+            origin: ["http://localhost:3000","http://192.168.31.10:3000"],
+            credentials: true,
         }
-    });
-
-    io.on("connection", (socket) => {
-        console.log("User connected", socket.id);
-
-        socket.on("userOnline", async (userId) => {
-
-            try {
-                await User.findByIdAndUpdate(userId, {
-                    isOnline: true
-                });
-
-                console.log(`User ${userId} is now online`);
-
-            } catch (e) {
-                console.log("Error setting user online:", e)
-            }
-        });
-
-        socket.on("storeUserId", (userId) => {
-            socket.userId = userId
-        });
-
-        socket.on("disconnect", async () => {
-            console.log("User disconnected", socket.id);
-
-            try {
-
-                await User.findByIdAndUpdate(socket.userId, {
-                    isOnline: false,
-                    lastSeen: Date.now()
-                });
-
-                console.log(`User ${socket.userId} is now offline`);
-
-            } catch (e) {
-                console.error("Error setting user offline:", e);
-            }
-
-        });
-
     });
 
     const cpus = os.cpus().length;
@@ -76,16 +39,17 @@ try {
 
     });
 
-    if (cluster.isPrimary) {
-        for (let i = 0; i < cpus; i++) {
-            cluster.fork();
-        }
-        cluster.on('exit', (worker, code, signal) => {
-            console.log(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
-        });
-    }
+    // if (cluster.isPrimary) {
+    //     for (let i = 0; i < cpus; i++) {
+    //         cluster.fork();
+    //     }
+    //     cluster.on('exit', (worker, code, signal) => {
+    //         console.log(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
+    //     });
+    // }
 
-    else {
+    // else {
+        socketConnectionHandler(io);
         server.listen(port, '0.0.0.0', () => { console.log(`Server running at ${port}`) });
 
         async function serverConnection() {
@@ -101,9 +65,10 @@ try {
             app.use("/api/story", storyRouter);
             app.use("/api/report", reportRouter);
             app.use("/api/user", userRoutes);
+            app.use("/api/chat", chatRouter);
         }
         serverConnection();
-    }
+    
 } catch (e) {
     console.log(e);
 }

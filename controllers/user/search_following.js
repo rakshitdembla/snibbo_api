@@ -2,24 +2,40 @@ import { User } from "../../models/User.js";
 import { serverError } from "../../utils/server_error_res.js";
 import { getFullUserEntity } from "../../utils/full_user_entity.js";
 
-export const searchUser = async (req, res) => {
+export const searchFollowing = async (req, res) => {
     try {
-        const { username } = req.params;
+        const { username, userToSearch } = req.params;
         const userId = req.userId;
         const limit = Number(req.query.limit) || 4;
 
+        const user = await User.findOne({ username: username }).select("followings").lean();
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        const followingIds = user.followings || [];
+
+        if (followingIds.length === 0) {
+            return res.status(200).json({
+                success: true,
+                users: []
+            });
+        }
+
+        const regex = new RegExp("^" + userToSearch, "i");
+
         const findUsers = await User.find({
+            _id: {
+                $in: followingIds
+            },
             username: {
-                $regex: new RegExp("^" + username, "i")
+                $regex: regex
             }
         }).populate("userStories").limit(limit);
-
-        if (findUsers.length == 0) {
-            return res.status(200).json({
-            success: true,
-            users: []
-        }); 
-        }
 
         const users = findUsers.map((user) => {
             const hasActiveStories = user.userStories.length > 0;
@@ -49,11 +65,10 @@ export const searchUser = async (req, res) => {
             );
         });
 
-
         return res.status(200).json({
             success: true,
-            users: users
-        });
+            users
+        })
 
     } catch (e) {
         serverError(res, e);

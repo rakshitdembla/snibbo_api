@@ -33,7 +33,7 @@ export const getComments = async (req, res) => {
             });
         }
 
-                const user = await User.findById(userId).lean();
+        const user = await User.findById(userId).lean();
         const userFollowings = user.followings.map(
             (id) => {
                 return id.toString();
@@ -63,7 +63,7 @@ export const getComments = async (req, res) => {
                     const commentOwnerId = commentOwner._id;
                     const stories = await Story.find({
                         userId: commentOwnerId
-                    }).lean();
+                    });
 
                     const hasActiveStories = stories.length > 0;
                     let isAllStoriesViewed = hasActiveStories;
@@ -164,11 +164,11 @@ export const getReplies = async (req, res) => {
                 async (reply) => {
                     const replyOwner =
                         await User.findById(reply.userId).lean();
-                        console.log(replyOwner);
+                    console.log(replyOwner);
                     const replyOwnerId = replyOwner._id;
                     const stories = await Story.find({
                         userId: replyOwnerId
-                    }).lean();
+                    });
 
                     const hasActiveStories = stories.length > 0;
                     let isAllStoriesViewed = hasActiveStories;
@@ -185,14 +185,14 @@ export const getReplies = async (req, res) => {
                             }
                         }
                     }
-console.log("getuserentity");
+                    console.log("getuserentity");
                     const userEntity = getUserEntity(
                         replyOwner,
                         hasActiveStories,
                         isAllStoriesViewed
                     )
-                    console.log("user entitiy is",userEntity);
-                    
+                    console.log("user entitiy is", userEntity);
+
 
                     return getreplyEntity(
                         reply,

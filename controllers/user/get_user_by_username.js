@@ -23,7 +23,7 @@ export const getUserByUsername = async (req, res) => {
 
 
         const userObj = result.toObject();
-        const { userStories,followers,followings,userPosts,_id, ...userWithoutStories } = userObj;
+        const { userStories, followers, followings, userPosts, _id, ...userWithoutStories } = userObj;
 
         const hasActiveStories = userStories && userStories.length > 0;
 
@@ -37,15 +37,16 @@ export const getUserByUsername = async (req, res) => {
 
 
         let viewedAllStories = false;
-        
+
         if (isMyProfile && hasActiveStories) {
             viewedAllStories = true
         } else {
-        if (hasActiveStories) {
-            viewedAllStories = userStories.every(story =>
-                story.storyViews.includes(userId.toString())
-            );
-        }
+            if (hasActiveStories) {
+                viewedAllStories = userStories.every(story =>
+                    story.storyViews.map(id => id.toString()).includes(userId.toString())
+                );
+
+            }
         }
 
 

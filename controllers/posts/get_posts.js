@@ -29,7 +29,7 @@ export const getAllPosts = async (req, res) => {
                 const stories = await Story.find({ userId: postOwnerId });
 
                 const hasActiveStories = stories.length > 0;
-                const isMyPost = userId == postOwnerId;
+                const isMyPost = userId.toString() == postOwnerId.toString();
 
                 let isAllStoriesViewed = true;
                 if (!isMyPost) {
@@ -94,7 +94,7 @@ export const explorePosts = async (req, res) => {
                 const stories = await Story.find({ userId: postOwnerId });
 
                 const hasActiveStories = stories.length > 0;
-                const isMyPost = userId == postOwnerId;
+                const isMyPost = userId.toString() == postOwnerId.toString();
 
                 let isAllStoriesViewed = true;
                 if (!isMyPost) {

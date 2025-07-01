@@ -24,6 +24,7 @@ import { getSavedPosts } from "../controllers/posts/saved/user_saved_posts.js";
 import { removeSavedPost } from "../controllers/posts/saved/remove_saved_post.js";
 
 import { getUserPosts } from "../controllers/posts/get_user_posts.js";
+import { getPostById } from "../controllers/posts/get_post_by_id.js";
 
 const postsRouter = express.Router();
 
@@ -57,6 +58,9 @@ postsRouter.get("/explore", isAuthenticated, explorePosts);
 
 // GET route to fetch posts from a specific user - requires username and authentication
 postsRouter.get("/user-posts/:username", isAuthenticated, getUserPosts);
+
+// GET route to fetch a specific post- requires postId and authentication
+postsRouter.get("/get-post/:postId", isAuthenticated, getPostById);
 
 
 // ===============================

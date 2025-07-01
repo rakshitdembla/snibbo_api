@@ -25,7 +25,7 @@ try {
         pingTimeout: 20000
         ,
         cors: {
-            origin: ["http://localhost:3000","http://192.168.31.10:3000"],
+            origin: ["http://localhost:3000","http://192.168.106.108:3000"],
             credentials: true,
         }
     });

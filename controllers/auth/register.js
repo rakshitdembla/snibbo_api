@@ -1,12 +1,12 @@
 import { User } from "../../models/User.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { serverError } from "../../utils/server_error_res.js";
 
 export const registerController = async (req, res) => {
     try {
         const { username, name, email, password } = req.body;
 
-        if (!username, !name, !email, !password) {
+        if (!username || !name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are mandatory in the body."

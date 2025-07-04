@@ -2,7 +2,7 @@ import { User } from "../../models/User.js"
 import jwt from "jsonwebtoken";
 import { serverError } from "../../utils/server_error_res.js"
 import nodemailer from "nodemailer";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const forgetPassword = async (req, res) => {
     try {

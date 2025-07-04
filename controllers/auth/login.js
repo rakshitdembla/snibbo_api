@@ -1,5 +1,5 @@
 import { User } from "../../models/User.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { serverError } from "../../utils/server_error_res.js";
 
 export const loginController = async (req, res) => {

@@ -18,6 +18,7 @@ import { chatRouter } from "./routes/chat_routes.js";
 try {
     dotenv.config()
     const app = express();
+    app.set('trust proxy', 1);
     const port = process.env.PORT || 3000;
     const server = http.createServer(app);
     const io = new Server(server, {

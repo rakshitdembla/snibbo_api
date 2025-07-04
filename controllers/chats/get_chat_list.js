@@ -92,16 +92,16 @@ export const getChatList = async (req, res) => {
 
         // Loop through each chat and prepare full response
         const chats = await Promise.all(getChats.map(async (chat) => {
-            
+
             const participant = chat.participantInfo;
             const participantId = participant._id.toString();
-            
+
 
             // Check if the participant has any active stories
             const stories = await Story.find({ userId: participantId });
             const hasActiveStories = stories.length > 0;
 
-            
+
 
             // Determine if all participant stories are viewed by current user
             let isAllStoriesViewed = hasActiveStories;
@@ -111,11 +111,11 @@ export const getChatList = async (req, res) => {
                     break;
                 }
             }
-            
+
 
             // Check if the current user has blocked the participant
             const isBlockedByMe = myBlockedUsers.includes(participantId);
-            
+
 
             // Check if either user has blocked the other
             let isBlocked = false;

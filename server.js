@@ -13,24 +13,22 @@ import cors from "cors";
 import { socketConnectionHandler } from "./controllers/sockets/socket_controller.js"
 import { reportRouter } from "./routes/report_routes.js";
 import { userRoutes } from "./routes/user_routes.js";
-import {chatRouter} from "./routes/chat_routes.js";
+import { chatRouter } from "./routes/chat_routes.js";
 
 try {
     dotenv.config()
     const app = express();
-    const port = 3000;
+    const port = process.env.PORT || 3000;
     const server = http.createServer(app);
     const io = new Server(server, {
         pingInterval: 25000,
         pingTimeout: 20000
         ,
         cors: {
-            origin: ["http://localhost:3000","http://192.168.106.108:3000"],
+            origin: [process.env.CLIENT_ORIGIN || "http://localhost:3000"],
             credentials: true,
         }
     });
-
-    const cpus = os.cpus().length;
 
     const limiter = ratelimit({
         max: 600,
@@ -39,36 +37,26 @@ try {
 
     });
 
-    // if (cluster.isPrimary) {
-    //     for (let i = 0; i < cpus; i++) {
-    //         cluster.fork();
-    //     }
-    //     cluster.on('exit', (worker, code, signal) => {
-    //         console.log(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
-    //     });
-    // }
+    server.listen(port, '0.0.0.0', () => { console.log(`Server running at ${port}`) });
+    app.use(cors());
 
-    // else {
-        socketConnectionHandler(io);
-        server.listen(port, '0.0.0.0', () => { console.log(`Server running at ${port}`) });
+    async function serverConnection() {
+        await mongoose.connect(process.env.MONGOOSE_CONNECTION, {
+            dbName: "snibbo",
+        });
+        app.use(express.urlencoded({ extended: true }));
+        app.use(express.json());
+        app.use(limiter);
+        app.use("/api/auth", authRouter);
+        app.use("/api/posts", postsRouter);
+        app.use("/api/story", storyRouter);
+        app.use("/api/report", reportRouter);
+        app.use("/api/user", userRoutes);
+        app.use("/api/chat", chatRouter);
+    }
+    socketConnectionHandler(io);
+    serverConnection();
 
-        async function serverConnection() {
-            await mongoose.connect(process.env.MONGOOSE_CONNECTION, {
-                dbName: "snibbo",
-            });
-            app.use(cors());
-            app.use(express.urlencoded({ extended: true }));
-            app.use(express.json());
-            app.use(limiter);
-            app.use("/api/auth", authRouter);
-            app.use("/api/posts", postsRouter);
-            app.use("/api/story", storyRouter);
-            app.use("/api/report", reportRouter);
-            app.use("/api/user", userRoutes);
-            app.use("/api/chat", chatRouter);
-        }
-        serverConnection();
-    
 } catch (e) {
     console.log(e);
 }
